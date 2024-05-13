@@ -9,7 +9,10 @@
             "type": "debugpy",
             "request": "launch",
             "program": "${file}",
-            "console": "internalConsole"
+            // I use the integrated terminal so I can prompt the LLMs
+            "console": "integratedTerminal",
+            // Allows to debug packages' code
+            "justMyCode": false
         }
     ]
 }
