@@ -32,13 +32,13 @@ prompt = PromptTemplate(
 )
 
 memory = ConversationBufferMemory(
-    memory_key="chat_history", 
+    memory_key="chat_history",
     return_messages=True
 )
 
 chat_chain = LLMChain(
-    llm=llm, 
-    prompt=prompt, 
+    llm=llm,
+    prompt=prompt,
     memory=memory
 )
 
@@ -75,17 +75,17 @@ agent_prompt = hub.pull("hwchase17/react-chat")
 
 agent = create_react_agent(
     # The agent uses the previously initialized chat model
-    llm, 
+    llm,
     # The agent uses the tools
-    tools, 
+    tools,
     # And starts from the pre-made agent
     agent_prompt
 )
 
 # I think the Agent executor wrap the agent allowing to chat with him
 agent_executor = AgentExecutor(
-    agent=agent, 
-    tools=tools, 
+    agent=agent,
+    tools=tools,
     memory=memory,
     # This prevents the model from running too long or entering an infinite loop
     max_interations=3,

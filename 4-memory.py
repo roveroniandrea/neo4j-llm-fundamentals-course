@@ -76,6 +76,6 @@ while True:
     response = chat_chain.invoke({
         "context": current_weather,
         "question": question
-        })
+    })
 
     print(response["text"])
