@@ -1,9 +1,9 @@
-from langchain.chains import RetrievalQA
+import os
+
+from dotenv import load_dotenv
+from langchain.chains.retrieval_qa.base import RetrievalQA
 from langchain_community.vectorstores.neo4j_vector import Neo4jVector
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
-import os
-from dotenv import load_dotenv
-
 
 # NOTE: This lesson does not refer to Labradors
 
@@ -11,6 +11,7 @@ from dotenv import load_dotenv
 # Example of a query might be "Find a movie plot about a robot that wants to be human."
 
 # I'm not entirely sure what's the difference between retrievers and tools then
+# (UPDATE): I think this is a tool in fact. In next chapter I add this as a tool that the agent can use
 
 load_dotenv()
 
@@ -70,8 +71,10 @@ plot_retriever = RetrievalQA.from_llm(
 )
 
 # What happens is that the vector store is first used to match movies against the query
-# Then the result (ad Documents) is passed to the LLM to elaborate the response
+# Then the result (as Documents) is passed to the LLM to elaborate the response
 # In fact, the documents matched are 4, (see result.source_documents), but the LLM chooses the first one since I asked "A (single) movie"
+# NOTE: This is not entirely right. If I search "Find me a movie where a young guy travers with a scientist called "Doc" with a time machine"
+# that apparently are not on the vector store, the result["result"] correctly says Return to the Future, but source_documents contain some other movies
 result = plot_retriever.invoke(
     {"query": "A movie where a mission to the moon goes wrong"}
 )
