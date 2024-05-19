@@ -48,7 +48,7 @@ chat_chain = LLMChain(
 youtube = YouTubeSearchTool()
 
 
-# Also, create the Retriever
+# Also, create the Retriever to use as tool
 embedding_provider = OpenAIEmbeddings(
     openai_api_key=os.getenv("OPENAI_KEY")
 )
@@ -73,8 +73,6 @@ plot_retriever = RetrievalQA.from_llm(
 
 # Tools expect a single query input and a single output key.
 # Since RetrievalQA chain returns multiple outputs ("result" and "source_documents"), it needs to be wrapped
-
-
 def run_retriever(query):
     results = plot_retriever.invoke({"query": query})
     # format the results
@@ -86,7 +84,7 @@ def run_retriever(query):
     return movies
 
 
-# Create tools for the agens
+# Create tools for the agents
 tools = [
     Tool.from_function(
         name="Movie Chat",
@@ -139,7 +137,7 @@ agent_executor = AgentExecutor(
 # So If I keep results["source_documents"] the LLM might answer with some garbage movies, despite knowing the solution
 # So I'm not entirely sure what calls are made when choosing the tool, and what happens when the tools answers back
 # My question is: if the tool does not find the right movie and returns garbage,
-# why (and by who) the field results["result"] is pupolated with "I think you're referring to Return to the Future"
+# why (and by who) the field results["result"] is pupolated with "I think you're referring to Return to the Future"?
 while True:
     q = input("> ")
     response = agent_executor.invoke({"input": q})
