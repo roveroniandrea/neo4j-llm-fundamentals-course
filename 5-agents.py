@@ -55,6 +55,8 @@ tools = [
         # So, this tool just asks the model itself for an answer, without accessing any API
         func=chat_chain.run,
         # Don't actually know what it does: "The return_direct flag indicates that the tool will return the result directly"
+        # UPDATE: Found it by trying in file #12: If True, it means that the output of the tool will be directedly shown as the answer
+        # If False, the output of the tool will be passed and elaborated by the LLM
         return_direct=True,
     ),
     # This tool instead, allows to seach for a trailer on youtube and retrieve a link
