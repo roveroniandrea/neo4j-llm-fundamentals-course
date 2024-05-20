@@ -6,3 +6,4 @@ python-dotenv==1.0.1
 requests
 youtube-search
 neo4j
+langchainhub
