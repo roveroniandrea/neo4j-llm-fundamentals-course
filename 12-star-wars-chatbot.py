@@ -2,7 +2,7 @@ import os
 
 from dotenv import load_dotenv
 from langchain import hub
-from langchain.agents import AgentExecutor, create_react_agent
+from langchain.agents import AgentExecutor, create_react_agent, create_tool_calling_agent
 from langchain.chains.conversation.memory import ConversationBufferMemory
 from langchain.chains.llm import LLMChain
 from langchain.prompts import PromptTemplate
@@ -25,7 +25,7 @@ llm = ChatOpenAI(
     verbose=True
 )
 
-# Create the prompt
+# Create the prompt TODO: This is used only for the "base chat" tool
 prompt = PromptTemplate(
     template="""You are a Star Wars chatbot.
     You answer questions regarding Star Wars films and characters, species, planets, starships and vehicles that appear in Star Wars.
@@ -45,7 +45,7 @@ memory = ConversationBufferMemory(
     return_messages=True
 )
 
-# Initialize the chain TODO: Is not used!
+# Initialize the chain TODO: Is used just for the "base chat" tool
 chat_chain = LLMChain(
     llm=llm,
     prompt=prompt,
@@ -99,6 +99,12 @@ def characterTool(query):
 
 # Create the search tools
 tools = [
+    # Tool.from_function(
+    #     name="Star Wars Chat",
+    #     description="For when you need to chat about Star Wars. The question will be a string. Return a string.",
+    #     func=chat_chain.run,
+    #     return_direct=True
+    # ),
     Tool.from_function(
         name="Film Search",
         description="""
@@ -186,11 +192,15 @@ tools = [
 # This agent instructs the model to use the tools at disposal to answer the question
 agent_prompt = hub.pull("hwchase17/react-chat")
 
-agent = create_react_agent(
-    llm,
-    tools,
-    agent_prompt
-)
+agent = create_react_agent(llm, tools, prompt=agent_prompt)
+
+# agent_prompt = hub.pull("hwchase17/openai-tools-agent")
+
+# agent = create_tool_calling_agent(llm, tools, prompt=agent_prompt)
+
+print("Agent prompt is: ")
+agent_prompt.pretty_print()
+
 
 agent_executor = AgentExecutor(
     agent=agent,
@@ -198,7 +208,7 @@ agent_executor = AgentExecutor(
     memory=memory,
     max_interations=3,
     verbose=True,
-    handle_parse_errors=True
+    handle_parsing_errors=True
 )
 
 
