@@ -21,7 +21,8 @@ load_dotenv()
 
 # Initialize the LLM
 llm = ChatOpenAI(
-    openai_api_key=os.getenv("OPENAI_KEY")
+    openai_api_key=os.getenv("OPENAI_KEY"),
+    verbose=True
 )
 
 # Create the prompt
@@ -44,7 +45,7 @@ memory = ConversationBufferMemory(
     return_messages=True
 )
 
-# Initialize the chain
+# Initialize the chain TODO: Is not used!
 chat_chain = LLMChain(
     llm=llm,
     prompt=prompt,
