@@ -73,6 +73,8 @@ plot_retriever = RetrievalQA.from_llm(
 
 # Tools expect a single query input and a single output key.
 # Since RetrievalQA chain returns multiple outputs ("result" and "source_documents"), it needs to be wrapped
+
+
 def run_retriever(query):
     results = plot_retriever.invoke({"query": query})
     # format the results
@@ -126,7 +128,7 @@ agent_executor = AgentExecutor(
     memory=memory,
     max_interations=3,
     verbose=True,
-    handle_parse_errors=True
+    handle_parsing_errors=True
 )
 
 

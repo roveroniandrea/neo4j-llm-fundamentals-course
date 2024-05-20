@@ -94,7 +94,7 @@ agent_executor = AgentExecutor(
     # Used for debugging, prints on the console the tool execution, like which tool has been picked, which inout is passed, which output returns
     verbose=True,
     # If true, handles parsing errors in case they occur and returns a message to the user
-    handle_parse_errors=True
+    handle_parsing_errors=True
 )
 
 
