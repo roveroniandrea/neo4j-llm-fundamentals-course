@@ -71,9 +71,29 @@ def filmTool(query):
 
     if not req.status_code == 200:
         raise "Request error"
-
     response = req.text
+    return response
 
+
+def characterTool(query):
+    values = query.split(",")
+    characterUrl = values[0]
+    characterName = values[1]
+
+    req = ""
+    if characterUrl:
+        req = requests.get(characterUrl)
+    elif characterName:
+        req = requests.get(
+            url="https://swapi.dev/api/people/",
+            params={"search": characterName}
+        )
+    else:
+        raise "Malformed query"
+
+    if not req.status_code == 200:
+        raise "Request error"
+    response = req.text
     return response
 
 
@@ -116,6 +136,47 @@ tools = [
         edited (of type string): the ISO 8601 date format of the time that this resource was edited.
         """,
         func=filmTool,
+        return_direct=False
+    ),
+    Tool.from_function(
+        name="Character Search",
+        description="""
+        Use when need to find details about characters given their url or name.
+
+        Input:
+        The input for this tool should be a comma separated list,
+        where the first element is the character url, or empty character if not available,
+        and the second element is the character name, or empty character if not available.
+        Use this tool only if at least once of the tuple elements is available.
+        Do not use this tool if none of the tuple elements are available.
+
+        Output:
+        This tool returns a stringified JSON with the following properties:
+        "count": Total number of Characters matched. Characters are paginated
+        "next": If not None, is the url to retrieve the next page of the results
+        "previous": If not None, is the url to retrieve the previous page of the results. This value should be ignored
+        "results": Is a stringified list of Characters.
+
+        Each Character has the following attributes:
+
+        name (of type string): The name of this person.
+        birth_year (of type string): The birth year of the person, using the in-universe standard of BBY or ABY - Before the Battle of Yavin or After the Battle of Yavin. The Battle of Yavin is a battle that occurs at the end of Star Wars episode IV: A New Hope.
+        eye_color (of type string): The eye color of this person. Will be "unknown" if not known or "n/a" if the person does not have an eye.
+        gender (of type string): The gender of this person. Either "Male", "Female" or "unknown", "n/a" if the person does not have a gender.
+        hair_color (of type string): The hair color of this person. Will be "unknown" if not known or "n/a" if the person does not have hair.
+        height (of type string): The height of the person in centimeters.
+        mass (of type string): The mass of the person in kilograms.
+        skin_color (of type string): The skin color of this person.
+        homeworld (of type string): The URL of a planet resource, a planet that this person was born on or inhabits.
+        films (of type array): An array of film resource URLs that this person has been in.
+        species (of type array): An array of species resource URLs that this person belongs to.
+        starships (of type array): An array of starship resource URLs that this person has piloted.
+        vehicles (of type array): An array of vehicle resource URLs that this person has piloted.
+        url (of type string): the hypermedia URL of this resource.
+        created (of type string): the ISO 8601 date format of the time that this resource was created.
+        edited (of type string): the ISO 8601 date format of the time that this resource was edited.
+        """,
+        func=characterTool,
         return_direct=False
     )
 ]
